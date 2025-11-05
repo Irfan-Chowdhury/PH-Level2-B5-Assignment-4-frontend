@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { authApi, useLogoutMutation, useUserInfoQuery} from "@/redux/features/auth/auth.api";
 import { useAppDispatch } from "@/redux/hook";
 import { ModeToggle } from "./ModeToggler";
+import { Book } from "lucide-react";
 
 export default function Navbar() {
   const { data } = useUserInfoQuery(undefined);
@@ -21,15 +22,18 @@ export default function Navbar() {
             <header className="sticky top-0 z-50 bg-white shadow-md">
                 <nav className="container mx-auto flex justify-between items-center p-4">
                 <Link to="/" className="flex items-center gap-2 text-2xl font-bold text-indigo-600">
-                    <Wallet className="w-7 h-7" />
-                    DigiWallet
+                <Book className="w-7 h-7" />
+                    Library Management
                 </Link>
                 <ul className="hidden md:flex gap-6 font-medium">
                     <li><Link to="/" className="hover:text-indigo-600 transition">Home</Link></li>
-                    <li><Link to="/about" className="hover:text-indigo-600 transition">About</Link></li>
+                    <li><Link to="/books" className="hover:text-indigo-600 transition">All Books</Link></li>
+                    <li><Link to="/" className="hover:text-indigo-600 transition">Add Book</Link></li>
+                    <li><Link to="/borrow-summary" className="hover:text-indigo-600 transition">Borrow Summary</Link></li>
+                    {/* <li><Link to="/about" className="hover:text-indigo-600 transition">About</Link></li>
                     <li><Link to="/features" className="hover:text-indigo-600 transition">Features</Link></li>
                     <li><Link to="/contact" className="hover:text-indigo-600 transition">Contact</Link></li>
-                    <li><Link to="/faq" className="hover:text-indigo-600 transition">FAQ</Link></li>
+                    <li><Link to="/faq" className="hover:text-indigo-600 transition">FAQ</Link></li> */}
                 </ul>
 
                 <div className="flex items-center gap-2">
