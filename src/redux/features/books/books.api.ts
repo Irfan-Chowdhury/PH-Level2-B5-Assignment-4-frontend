@@ -81,7 +81,56 @@ export const booksApi = createApi({
       }),
       invalidatesTags: ["Books"],
     }),
-  }),
+
+    // --------------------------
+    // Borrow Books
+    // --------------------------
+    borrowBook: builder.mutation<{ success: boolean; message: string },{ book: string; quantity: number; dueDate: string }> ({
+      query: (body) => ({
+        url: "borrow",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["Books"], // to refresh available copies
+    }),
+
+    // --------------------------
+    // Borrow Books List history
+    // --------------------------
+
+  //   getBorrowSummary: builder.query<  {
+  //     success: boolean;
+  //     message: string;
+  //     data: {
+  //       totalQuantity: number;
+  //       book: {
+  //         title: string;
+  //         isbn: string;
+  //       };
+  //     }[];
+  //   },
+  //   void>({
+  //     query: () => ({
+  //       url: "borrow",
+  //       method: "GET",
+  //     }),
+  //     transformResponse: (response: any) => response.data,
+  //   })
+  // }),
+
+  getBorrowSummary: builder.query<{
+        totalQuantity: number;
+        book: { title: string; isbn: string };
+      }[],
+      void>({
+      query: () => ({ 
+        url: "borrow", 
+        method: "GET" 
+      }),
+      transformResponse: (response: any) => response.data, // return the array itself
+    })
+  })
+  
 });
 
 // ✅ Export auto-generated hooks
@@ -91,4 +140,6 @@ export const {
   useAddBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,
+  useBorrowBookMutation,
+  useGetBorrowSummaryQuery,
 } = booksApi;

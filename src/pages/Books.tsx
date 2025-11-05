@@ -24,6 +24,7 @@ import {
   useAddBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,
+  useBorrowBookMutation,
 } from "@/redux/features/books/books.api";
 
 interface Book {
@@ -42,6 +43,9 @@ export default function Books() {
   const [addBook] = useAddBookMutation();
   const [updateBook] = useUpdateBookMutation();
   const [deleteBook] = useDeleteBookMutation();
+  // inside component:
+  const [borrowBook] = useBorrowBookMutation();
+
 
   const [selectedBook, setSelectedBook] = useState<Book | null>(null);
   const [addOpen, setAddOpen] = useState(false);
@@ -98,7 +102,8 @@ export default function Books() {
       toast.success("Book updated!");
       setEditOpen(false);
       setFormData({});
-    } catch {
+    } 
+    catch {
       toast.error("Failed to update book");
     }
   };
@@ -116,19 +121,48 @@ export default function Books() {
   };
 
   // --- Borrow Book (UI Only for Now) ---
-  const handleBorrow = () => {
+  // const handleBorrow = () => {
+  //   if (!selectedBook) return;
+  //     const qty = Number(borrowQty);
+  //   if (qty > selectedBook.copies)
+  //     return toast.error("Not enough copies available");
+
+  //   toast.success(
+  //     `Borrowed ${qty} copy/copies of "${selectedBook.title}". Redirecting...`
+  //   );
+  //   setBorrowOpen(false);
+
+  //   // redirect to summary
+  //   window.location.href = "/borrow-summary";
+  // };
+
+  const handleBorrow = async () => {
     if (!selectedBook) return;
     const qty = Number(borrowQty);
     if (qty > selectedBook.copies)
       return toast.error("Not enough copies available");
-
-    toast.success(
-      `Borrowed ${qty} copy/copies of "${selectedBook.title}". Redirecting...`
-    );
-    setBorrowOpen(false);
-
-    // redirect to summary
-    window.location.href = "/borrow-summary";
+    if (!borrowDue) return toast.error("Please select a due date");
+  
+    try {
+      await borrowBook({
+        book: selectedBook._id,
+        quantity: qty,
+        dueDate: new Date(borrowDue).toISOString(),
+      }).unwrap();
+  
+      toast.success(
+        `Borrowed ${qty} copy/copies of "${selectedBook.title}". Redirecting...`
+      );
+      setBorrowOpen(false);
+  
+      // redirect to borrow summary after short delay
+      setTimeout(() => {
+        window.location.href = "/borrow-summary";
+      }, 1200);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to borrow book");
+    }
   };
 
   return (
@@ -184,12 +218,12 @@ export default function Books() {
                   <TableCell>
                     <span
                       className={`px-2 py-1 text-sm rounded ${
-                        book.available
+                        book.copies > 0
                           ? "bg-green-100 text-green-700"
                           : "bg-red-100 text-red-600"
                       }`}
                     >
-                      {book.available ? "Available" : "Unavailable"}
+                      {book.copies > 0 ? "Available" : "Unavailable"}
                     </span>
                   </TableCell>
                   <TableCell className="flex justify-center gap-2">
