@@ -30,14 +30,10 @@ export default function Navbar() {
                     <li><Link to="/books" className="hover:text-indigo-600 transition">All Books</Link></li>
                     <li><Link to="/create-book" className="hover:text-indigo-600 transition">Add Book</Link></li>
                     <li><Link to="/borrow-summary" className="hover:text-indigo-600 transition">Borrow Summary</Link></li>
-                    {/* <li><Link to="/about" className="hover:text-indigo-600 transition">About</Link></li>
-                    <li><Link to="/features" className="hover:text-indigo-600 transition">Features</Link></li>
-                    <li><Link to="/contact" className="hover:text-indigo-600 transition">Contact</Link></li>
-                    <li><Link to="/faq" className="hover:text-indigo-600 transition">FAQ</Link></li> */}
                 </ul>
 
                 <div className="flex items-center gap-2">
-                    <ModeToggle />
+                    {/* <ModeToggle />
                     {data?.data?.email && (
                         <Button onClick={handleLogout} variant="outline" className="text-sm">
                             Logout
@@ -48,7 +44,7 @@ export default function Navbar() {
                         <Button asChild className="bg-indigo-600 text-white rounded-xl shadow-md hover:bg-indigo-700">
                             <Link to="/login">Login</Link>
                         </Button>
-                    )}
+                    )} */}
                 </div>
                 </nav>
             </header>

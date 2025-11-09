@@ -1,45 +1,76 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import { BookOpen, LibraryBig, ClipboardList, HandHeart } from "lucide-react";
+import {
+  BookOpen,
+  LibraryBig,
+  ClipboardList,
+  HandHeart,
+} from "lucide-react";
+import {
+  useGetBooksQuery,
+  useBorrowBookMutation,
+} from "@/redux/features/books/books.api";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 
 export default function HeroSection() {
-  // Static mock books
-  const books = [
-    {
-      id: "1",
-      title: "The Pragmatic Programmer",
-      author: "Andrew Hunt & David Thomas",
-      genre: "Software Engineering",
-      isbn: "978-0201616224",
-      copies: 4,
-      available: true,
-      image:
-        "https://cdn.kobo.com/book-images/f93b6f9a-13b7-4e12-9b62-6ee35cf1c4b1/1200/1200/False/the-pragmatic-programmer.jpg",
-    },
-    {
-      id: "2",
-      title: "Clean Code",
-      author: "Robert C. Martin",
-      genre: "Programming",
-      isbn: "978-0132350884",
-      copies: 0,
-      available: false,
-      image:
-        "https://cdn.kobo.com/book-images/43b8e7a7-b357-4a1e-bfb7-fbc5a0f7cb38/1200/1200/False/clean-code.jpg",
-    },
-    {
-      id: "3",
-      title: "Deep Learning with Python",
-      author: "François Chollet",
-      genre: "Artificial Intelligence",
-      isbn: "978-1617294433",
-      copies: 2,
-      available: true,
-      image:
-        "https://cdn.kobo.com/book-images/f0df47a9-1784-40f1-bd2d-01ff90f7ef9d/1200/1200/False/deep-learning-with-python.jpg",
-    },
-  ];
+  const { data: books = [], isLoading, isError } = useGetBooksQuery();
+  const [borrowBook, { isLoading: borrowing }] = useBorrowBookMutation();
+
+  // --- Borrow Modal State ---
+  const [borrowOpen, setBorrowOpen] = useState(false);
+  const [selectedBook, setSelectedBook] = useState<any>(null);
+  const [borrowQty, setBorrowQty] = useState(1);
+  const [borrowDue, setBorrowDue] = useState("");
+
+  const defaultImage =
+    "https://cdn-icons-png.flaticon.com/512/2232/2232688.png";
+
+  // --- Sort newest first ---
+  const sortedBooks = [...books].sort(
+    (a: any, b: any) =>
+      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  );
+
+  // --- Borrow Modal Handler ---
+  const openBorrowModal = (book: any) => {
+    setSelectedBook(book);
+    setBorrowQty(1);
+    setBorrowDue("");
+    setBorrowOpen(true);
+  };
+
+  // --- Confirm Borrow ---
+  const handleBorrow = async () => {
+    if (!selectedBook) return;
+    if (borrowQty < 1 || borrowQty > selectedBook.copies)
+      return toast.error("Invalid quantity");
+    if (!borrowDue) return toast.error("Please select a due date");
+
+    try {
+      await borrowBook({
+        book: selectedBook._id, // matches your RTK definition
+        quantity: borrowQty,
+        dueDate: borrowDue,
+      }).unwrap();
+
+      toast.success("Book borrowed successfully!");
+      setBorrowOpen(false);
+      setSelectedBook(null);
+    } catch (err) {
+      toast.error("Failed to borrow. Try again!");
+    }
+  };
 
   return (
     <main className="flex-grow">
@@ -54,12 +85,10 @@ export default function HeroSection() {
           >
             Manage Your Library with Ease
           </motion.h1>
-
           <p className="text-lg md:text-xl mb-8 max-w-2xl text-gray-100">
             A minimal system to organize books, manage borrows, and keep track
             of your collection — all in one place.
           </p>
-
           <div className="flex gap-4">
             <Button
               size="lg"
@@ -70,7 +99,7 @@ export default function HeroSection() {
             <Button
               size="lg"
               variant="outline"
-              className="text-white border-white hover:bg-white hover:text-sky-700 font-semibold"
+              className="bg-white text-sky-700 hover:bg-gray-100 font-semibold"
             >
               <Link to="/create-book">Add New Book</Link>
             </Button>
@@ -81,32 +110,34 @@ export default function HeroSection() {
       {/* Highlights Section */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-6 grid md:grid-cols-3 gap-10 text-center">
-          <div className="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
-            <LibraryBig className="mx-auto w-10 h-10 text-sky-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Organize Collection</h3>
-            <p className="text-gray-600">
-              Keep every book catalogued by author, genre, and ISBN for quick
-              access.
-            </p>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
-            <BookOpen className="mx-auto w-10 h-10 text-sky-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Easy Borrowing</h3>
-            <p className="text-gray-600">
-              Borrow books seamlessly while the system tracks availability
-              automatically.
-            </p>
-          </div>
-
-          <div className="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition">
-            <ClipboardList className="mx-auto w-10 h-10 text-sky-600 mb-4" />
-            <h3 className="text-xl font-semibold mb-2">Borrow Summary</h3>
-            <p className="text-gray-600">
-              Get a quick overview of all borrowed books and total quantities at
-              a glance.
-            </p>
-          </div>
+          {[
+            {
+              icon: <LibraryBig className="mx-auto w-10 h-10 text-sky-600 mb-4" />,
+              title: "Organize Collection",
+              desc: "Keep every book catalogued by author, genre, and ISBN for quick access.",
+            },
+            {
+              icon: <BookOpen className="mx-auto w-10 h-10 text-sky-600 mb-4" />,
+              title: "Easy Borrowing",
+              desc: "Borrow books seamlessly while the system tracks availability automatically.",
+            },
+            {
+              icon: (
+                <ClipboardList className="mx-auto w-10 h-10 text-sky-600 mb-4" />
+              ),
+              title: "Borrow Summary",
+              desc: "Get a quick overview of all borrowed books and total quantities at a glance.",
+            },
+          ].map((item, i) => (
+            <div
+              key={i}
+              className="p-6 bg-white rounded-2xl shadow hover:shadow-lg transition"
+            >
+              {item.icon}
+              <h3 className="text-xl font-semibold mb-2">{item.title}</h3>
+              <p className="text-gray-600">{item.desc}</p>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -117,53 +148,72 @@ export default function HeroSection() {
             Available Books
           </h2>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {books.map((book) => (
+          {isLoading && (
+            <p className="text-center text-gray-500">Loading books...</p>
+          )}
+          {isError && (
+            <p className="text-center text-red-500">
+              Failed to fetch books. Please try again later.
+            </p>
+          )}
+          {!isLoading && !isError && sortedBooks.length === 0 && (
+            <p className="text-center text-gray-500">
+              No books found. Add a new one to get started!
+            </p>
+          )}
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-8">
+            {sortedBooks.map((book: any) => (
               <div
-                key={book.id}
+                key={book._id}
                 className="border rounded-xl shadow hover:shadow-lg transition overflow-hidden bg-gray-50"
               >
-                <img
-                  src={book.image}
-                  alt={book.title}
-                  className="w-full h-56 object-cover"
-                />
+                {book.image ? (
+                  <img
+                    src={book.image}
+                    alt={book.title}
+                    className="w-full h-56 object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-56 flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 text-gray-500 font-semibold text-lg">
+                    {book.title || "Untitled Book"}
+                  </div>
+                )}
                 <div className="p-5 text-center">
                   <h3 className="text-xl font-semibold text-gray-800 mb-2">
                     {book.title}
                   </h3>
                   <p className="text-gray-600 text-sm mb-1">
-                    <span className="font-medium">Author:</span> {book.author}
+                    <span className="font-medium">Author:</span>{" "}
+                    {book.author || "Unknown"}
                   </p>
                   <p className="text-gray-600 text-sm mb-1">
-                    <span className="font-medium">Genre:</span> {book.genre}
+                    <span className="font-medium">Genre:</span>{" "}
+                    {book.genre || "N/A"}
                   </p>
                   <p className="text-gray-600 text-sm mb-1">
-                    <span className="font-medium">ISBN:</span> {book.isbn}
+                    <span className="font-medium">ISBN:</span>{" "}
+                    {book.isbn || "N/A"}
                   </p>
                   <p
                     className={`text-sm font-medium mt-2 ${
-                      book.available ? "text-green-600" : "text-red-500"
+                      book.copies > 0 ? "text-green-600" : "text-red-500"
                     }`}
                   >
-                    {book.available
+                    {book.copies > 0
                       ? `Available (${book.copies} copies)`
                       : "Unavailable"}
                   </p>
 
-                  {/* Borrow Action */}
-                  <div className="flex justify-center mt-5">
+                  {/* Actions */}
+                  <div className="flex justify-center gap-3 mt-5">
                     <Button
                       size="sm"
                       className="bg-sky-600 hover:bg-sky-700 flex items-center gap-1"
-                      disabled={!book.available}
+                      disabled={book.copies <= 0}
+                      onClick={() => openBorrowModal(book)}
                     >
-                      <Link
-                        to={`/borrow/${book.id}`}
-                        className="flex items-center gap-1"
-                      >
-                        <HandHeart className="w-4 h-4" /> Borrow
-                      </Link>
+                      <HandHeart className="w-4 h-4" /> Borrow
                     </Button>
                   </div>
                 </div>
@@ -172,6 +222,39 @@ export default function HeroSection() {
           </div>
         </div>
       </section>
+
+      {/* --- Borrow Book Modal --- */}
+      <Dialog open={borrowOpen} onOpenChange={setBorrowOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Borrow Book</DialogTitle>
+          </DialogHeader>
+          {selectedBook && (
+            <div className="space-y-3">
+              <p className="font-medium">Book: {selectedBook.title}</p>
+              <Label>Quantity</Label>
+              <Input
+                type="number"
+                min={1}
+                max={selectedBook.copies}
+                value={borrowQty}
+                onChange={(e) => setBorrowQty(Number(e.target.value))}
+              />
+              <Label>Due Date</Label>
+              <Input
+                type="date"
+                value={borrowDue}
+                onChange={(e) => setBorrowDue(e.target.value)}
+              />
+            </div>
+          )}
+          <DialogFooter>
+            <Button onClick={handleBorrow} disabled={borrowing}>
+              {borrowing ? "Borrowing..." : "Confirm Borrow"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </main>
   );
 }

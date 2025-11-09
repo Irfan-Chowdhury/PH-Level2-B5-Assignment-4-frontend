@@ -98,25 +98,6 @@ export const booksApi = createApi({
     // Borrow Books List history
     // --------------------------
 
-  //   getBorrowSummary: builder.query<  {
-  //     success: boolean;
-  //     message: string;
-  //     data: {
-  //       totalQuantity: number;
-  //       book: {
-  //         title: string;
-  //         isbn: string;
-  //       };
-  //     }[];
-  //   },
-  //   void>({
-  //     query: () => ({
-  //       url: "borrow",
-  //       method: "GET",
-  //     }),
-  //     transformResponse: (response: any) => response.data,
-  //   })
-  // }),
 
   getBorrowSummary: builder.query<{
         totalQuantity: number;
