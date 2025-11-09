@@ -28,7 +28,7 @@ export default function Navbar() {
                 <ul className="hidden md:flex gap-6 font-medium">
                     <li><Link to="/" className="hover:text-indigo-600 transition">Home</Link></li>
                     <li><Link to="/books" className="hover:text-indigo-600 transition">All Books</Link></li>
-                    <li><Link to="/" className="hover:text-indigo-600 transition">Add Book</Link></li>
+                    <li><Link to="/create-book" className="hover:text-indigo-600 transition">Add Book</Link></li>
                     <li><Link to="/borrow-summary" className="hover:text-indigo-600 transition">Borrow Summary</Link></li>
                     {/* <li><Link to="/about" className="hover:text-indigo-600 transition">About</Link></li>
                     <li><Link to="/features" className="hover:text-indigo-600 transition">Features</Link></li>

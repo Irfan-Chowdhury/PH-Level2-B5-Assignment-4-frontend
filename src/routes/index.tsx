@@ -39,6 +39,7 @@ import AgentProfile from "@/pages/Dashboard/Agent/Profile";
 import ProtectedRoute from "../utils/ProtectedRoute";
 import Books from "@/pages/Books";
 import BorrowSummary from "@/pages/BorrowSummary";
+import AddBook from "@/pages/AddBook";
 
 export const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const router = createBrowserRouter([
       {
         Component: Books,
         path: "books"
+      },
+      {
+        Component: AddBook,
+        path: "create-book"
       },
       {
         Component: BorrowSummary,
