@@ -1,228 +1,152 @@
-<div align="center">
+# 📚 Library Management System
 
-# Digital Wallet (Frontend)
-
-</div>
-
-
-## 📘 Project Overview
-
-A multi-role digital wallet application built with **React**, **Vite**, **TailwindCSS**, and **TypeScript**. Supports **User**, **Agent**, and **Admin** roles with secure authentication, dashboards, and transaction management.
-
-This system enables:
-
-* Users to manage their wallet, top up, withdraw, and send money
-* Agents to perform cash-in/out on behalf of users
-* Admins to manage users, agents, wallets, transactions, and system states
+> A clean and fully functional **library management application** built with **React + TypeScript + Redux Toolkit Query (RTK Query)** for the frontend, and **Node.js + Express + MongoDB (Mongoose)** for the backend.  
+> The system allows users to manage books, perform CRUD operations, borrow books, and view borrow summaries — all through a minimal and responsive UI.
 
 ---
 
-## 🚀 Roles and Capabilities
+## 🚀 Live Demo
 
-| Role      | Capabilities                                                                           |
-| --------- | -------------------------------------------------------------------------------------- |
-| **User**  | Register, login, manage wallet, add/withdraw/send money, view transaction history      |
-| **Agent** | Add money to users (cash-in), withdraw from users (cash-out), create/add to own wallet |
-| **Admin** | Manage users, block/unblock wallets, approve/suspend agents, view all transactions     |
-
----
-
-## 🛠 Tech Stack
-
-* **Frontend:** React, Vite, TypeScript, TailwindCSS
-* **State Management:** Redux Toolkit
-* **Routing & Forms:** React Router, React Hook Form
-* **API & Notifications:** Axios, Sonner
-* **UI Components & Charts:** Radix UI, Recharts
+- **Frontend:** [https://your-frontend-link.vercel.app](#)
+- **Backend:** [https://your-backend-link.onrender.com/api](#)
+- **GitHub Repositories:**
+  - [Frontend Repo](#)
+  - [Backend Repo](#)
 
 ---
 
-## Setup Instructions
+## 🧩 Project Overview
 
-### 1. Clone the Repository
+This project is a **Minimal Library Management System** developed as part of a full-stack practical assignment.  
+It demonstrates modular frontend-backend integration, RESTful API communication, and a clean architecture with real-world business logic.
 
-```bash
-git clone git@github.com:Irfan-Chowdhury/PH-Level2-B5-Assignment-6-frontend.git
-cd PH-Level2-B5-Assignment-6-frontend
+**Key Focus Areas:**
+- Strong separation of concerns (Frontend ↔ Backend)
+- State management using **Redux Toolkit Query**
+- Scalable, modular, and type-safe code structure
+- Simple, elegant UI powered by **Tailwind CSS**
+
+---
+
+## ✨ Features
+
+### 📖 Book Management
+- Add, edit, and delete books.
+- Each book includes: title, author, genre, ISBN, description, and available copies.
+- Automatic availability update — if copies reach 0, the book becomes *Unavailable*.
+- Real-time UI updates via RTK Query cache invalidation.
+
+### 💼 Borrow Management
+- Borrow books directly from the book list or details page.
+- Enter quantity and due date before confirming.
+- Business logic ensures borrowing cannot exceed available copies.
+- Updates copies count dynamically in the UI.
+- Displays a success notification after successful borrow.
+
+### 📊 Borrow Summary
+- Aggregated list of all borrowed books.
+- Shows **Book Title**, **ISBN**, and **Total Quantity Borrowed**.
+- Data fetched via backend aggregation API.
+
+### 🖥️ Interface Overview
+| Page | Path | Description |
+|------|------|-------------|
+| **Book List** | `/books` | Displays all books with CRUD + borrow actions |
+| **Add Book** | `/create-book` | Form to add new books |
+| **Book Details** | `/books/:id` | Detailed info for a single book |
+| **Edit Book** | `/edit-book/:id` | Full-page form to edit existing book |
+| **Borrow Summary** | `/borrow-summary` | Displays total borrowed books with quantities |
+
+---
+
+## 🧠 Tech Stack
+
+### 🖥️ Frontend
+- **React + TypeScript**
+- **Redux Toolkit Query (RTK Query)** for state and API management
+- **Tailwind CSS** for responsive styling
+- **Lucide React** icons
+- **Sonner** for toast notifications
+- **Framer Motion** for smooth animations
+
+### ⚙️ Backend
+- **Node.js + Express.js**
+- **MongoDB + Mongoose**
+- **MVC Architecture (Modular)**
+- RESTful API with clean controller-service design
+
+---
+
+## 🧾 API Endpoints (Backend)
+
+### 📚 Books
+| Method | Endpoint | Description |
+|--------|-----------|-------------|
+| `GET` | `/api/books` | Get all books |
+| `GET` | `/api/books/:id` | Get single book by ID |
+| `POST` | `/api/books` | Add new book |
+| `PUT` | `/api/books/:id` | Update existing book |
+| `DELETE` | `/api/books/:id` | Delete book |
+
+### 📦 Borrow
+| Method | Endpoint | Description |
+|--------|-----------|-------------|
+| `POST` | `/api/borrow` | Borrow a book (includes quantity & due date) |
+| `GET` | `/api/borrow` | Get borrow summary (aggregated total per book) |
+
+---
+
+## 🧩 Core Logic Highlights
+
+### ✅ Borrow Functionality
+- Validates quantity before borrowing.
+- Automatically decrements copies in inventory.
+- If copies = 0 → updates `available = false`.
+
+### ✅ RTK Query Setup
+- Each CRUD operation automatically **invalidates cache**.
+- Uses `transformResponse` for clean and typed data handling.
+
+### ✅ UI Enhancements
+- Responsive layouts with Tailwind.
+- Real-time feedback with toast messages.
+- Dialog modals for Add/Edit/Borrow actions.
+
+---
+
+## 📂 Folder Structure (Frontend)
+
+```txt
+src/
+├── components/
+│ ├── ui/ # Reusable UI components (Button, Input, Dialog)
+├── pages/
+│ ├── Books.tsx # List + CRUD actions
+│ ├── AddBook.tsx # Create new book
+│ ├── BookDetails.tsx # Single book view
+│ ├── EditBook.tsx # Edit existing book
+│ ├── BorrowSummary.tsx# Borrow summary table
+├── redux/
+│ ├── api/
+│ │ └── apiSlice.ts # Base RTK Query config
+│ └── features/
+│ └── books/
+│ └── books.api.ts # Book + Borrow API endpoints
+├── App.tsx
+└── main.tsx
 ```
 
-### 2. Install Dependencies
 
+
+---
+
+## ⚙️ Installation & Setup
+
+### 🖥️ Frontend Setup
 ```bash
+git clone git@github.com:Irfan-Chowdhury/PH-Level2-B5-Assignment-4-frontend.git
+cd minimal-library-frontend
 npm install
-```
-
-### 3. Environment Configuration
-
-Create a `.env` file at the root with the following:
-
-```env
-VITE_BASE_URL="http://localhost:5000/api/v1"
-
-```
-
-### 4. Run the Server
-
-```bash
 npm run dev
-```
-
----
 
 
-
-
-<br>
-
-## ⚙️ Key Features Implemented
-
-* **Public Landing Section:** Responsive home, about, features, contact, and FAQ pages with smooth transitions and skeleton loading.
-* **Authentication:** JWT-based login, role selection on registration, persisted login state, and logout.
-* **User Dashboard:** Wallet overview, deposit/withdraw money, send money, transaction history with filters, and profile management.
-* **Agent Dashboard:** Manage user wallets (cash-in/out), view transactions, and profile management.
-* **Admin Dashboard:** User/agent management, transaction oversight with filters, and system settings.
-* **General Features:** Role-based navigation, form validations, global loading and error handling, pagination, and data visualization (charts and tables).
-
----
-
-<br>
-
-## 📽️ Demo
-
-* 🔗 **GitHub Repository**: [Link Here](https://github.com/Irfan-Chowdhury/PH-Level2-B5-Assignment-6-frontend)
-* 🌐 **Live Demo**: [https://digital-wallet-frontend-chi.vercel.app/](https://digital-wallet-frontend-chi.vercel.app/)
-
----
-
-<br>
-
-## Credentials
-
-### Admin
-    
-    Email : admin123@gmail.com
-    Password: admin123
-    
-### User
-    
-    Email : user123@gmail.com
-    Password: user123
-    
-    
-### Agent
-    
-    Email : agent123@gmail.com
-    Password: agent123
-    
-
-<!-- ## 📡 API Endpoints Summary
-
-### 🔐 Auth
-
-| Method | Endpoint                | Description                 |
-| ------ | ----------------------- | --------------------------- |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/user/register` | Register user or agent      |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/auth/login`    | Login and receive JWT token |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/auth/logout`    | logout from device |
-
----
-
-### 👤 User (Admin)
-
-| Method | Endpoint                               | Description              |
-| ------ | -------------------------------------- | ------------------------ |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/user/all-users`           | Get all user details |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/user/all-agents`                 | Admin: get all agents    |
-| GET  | `digital-wallet-frontend-chi.vercel.app/api/v1/user/approve-agent/:agentId` | Admin: Approve agent     |
-| GET  | `digital-wallet-frontend-chi.vercel.app/api/v1/user/suspend-agent/:agentId` | Admin: Suspend agent     |
-
----
-
-### 💳 Wallet (User/Agent)
-
-| Method | Endpoint                          | Description                          |
-| ------ | --------------------------------- | ------------------------------------ |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/my-wallet`        | Get current user’s wallet            |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/add-money`        | User/Agent: Add money to own wallet  |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/withdraw-money`   | User/Agent: Withdraw from own wallet |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/send-money`       | User: Send money to another user     |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/cash-in`          | Agent: Cash-in (add to user wallet)  |
-| POST   | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/cash-out`         | Agent: Cash-out (withdraw from user) |
-| GET  | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/block/:id`   | Admin: Block user wallet             |
-| GET  | `digital-wallet-frontend-chi.vercel.app/api/v1/wallet/unblock/:id` | Admin: Unblock user wallet           |
-
-### 💳 Wallet (Admin)
-
-| Method | Endpoint                          | Description                          |
-| ------ | --------------------------------- | ------------------------------------ |
-| GET    | `/api/v1/wallet/all`        | Get all users/agents wallet            |
----
-
-
-### 💰 Transactions (User/Agent)
-
-| Method | Endpoint                   | Description                                  |
-| ------ | -------------------------- | -------------------------------------------- |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/transaction/my-transactions`  | Get current user/agent’s transaction history |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/transaction/all` | Admin: View all transactions                 |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/transaction/:id` | Get specific transaction by ID               |
-
-### 💰 Transactions (Admin)
-
-| Method | Endpoint                   | Description                                  |
-| ------ | -------------------------- | -------------------------------------------- |
-| GET    | `digital-wallet-frontend-chi.vercel.app/api/v1/transaction/all` | Admin: View all transactions                 |
-
---- -->
-
-
-
-
-
-
-
-<!-- 
-
-### 🔹 2. Login
-
-**POST** `http://localhost:5000/api/v1/auth/login` -->
-
----
-
-<!-- ### 🔹 3. Add Money
-
-**POST** `/api/v1/wallet/add-money` -->
-
-<!-- ### 🔹 4. Send Money
-
-**POST** `/api/v1/wallet/send-money` -->
-
-
-
-
-<!-- ### 🔹 5. Withdraw Money
-
-**POST** `/api/v1/wallet/withdraw-money` -->
-
-
-<!-- ### 🔹 6. Cash IN
-
-**POST** `/api/v1/wallet/cash-in` -->
-
-
-<!-- ### 🔹 7. Cash Out
-
-**POST** `/api/v1/wallet/cash-out` -->
-
-
-## ✅ Author
-
-**Name :** Md Irfan Chowdhury <br>
-**Email** irfanchowdhury80@gmail.com.com <br>
-**LinkedIn** : https://www.linkedin.com/in/irfan-chowdhury/ <br>
-
----
-
-## 📜 License
-
-This project is open-source and available under the [MIT License](LICENSE).
