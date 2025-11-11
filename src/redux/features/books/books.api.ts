@@ -1,3 +1,4 @@
+import config from "@/config";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // ✅ TypeScript interface for Book
@@ -18,7 +19,7 @@ export interface Book {
 export const booksApi = createApi({
   reducerPath: "booksApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:5000/api/",
+    baseUrl: config.baseUrl
   }),
   tagTypes: ["Books"],
 
