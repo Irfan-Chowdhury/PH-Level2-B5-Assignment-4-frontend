@@ -10,14 +10,14 @@ export default function Footer() {
         </p>
 
         <div className="flex gap-4 mt-4 md:mt-0">
-          <Link to="/privacy" className="hover:text-white transition-colors">
-            Privacy
+          <Link to="/" className="hover:text-white transition-colors">
+            Home
           </Link>
-          <Link to="/terms" className="hover:text-white transition-colors">
-            Terms
+          <Link to="/books" className="hover:text-white transition-colors">
+            All Books
           </Link>
-          <Link to="/contact" className="hover:text-white transition-colors">
-            Contact
+          <Link to="/borrow-summary" className="hover:text-white transition-colors">
+          Borrow Summary
           </Link>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 export default function HeroSection() {
+  const navigate = useNavigate();
   const { data: books = [], isLoading, isError } = useGetBooksQuery();
   const [borrowBook, { isLoading: borrowing }] = useBorrowBookMutation();
 
@@ -53,8 +54,10 @@ export default function HeroSection() {
   // --- Confirm Borrow ---
   const handleBorrow = async () => {
     if (!selectedBook) return;
-    if (borrowQty < 1 || borrowQty > selectedBook.copies)
-      return toast.error("Invalid quantity");
+    
+    if (borrowQty < 1) return toast.error("0 quantity not allowed.");
+    else if(borrowQty > selectedBook.copies) return toast.error(`Only ${selectedBook.copies} copies available`)
+
     if (!borrowDue) return toast.error("Please select a due date");
 
     try {
@@ -67,6 +70,7 @@ export default function HeroSection() {
       toast.success("Book borrowed successfully!");
       setBorrowOpen(false);
       setSelectedBook(null);
+      navigate("/borrow-summary");
     } catch (err) {
       toast.error("Failed to borrow. Try again!");
     }

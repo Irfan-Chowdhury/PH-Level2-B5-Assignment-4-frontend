@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Edit, Trash2, BookOpen, Eye } from "lucide-react";
 import { toast } from "sonner";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import {
   useGetBooksQuery,
   useDeleteBookMutation,
@@ -23,6 +23,7 @@ export default function Books() {
   const { data: books = [], isLoading, isError } = useGetBooksQuery();
   const [deleteBook] = useDeleteBookMutation();
   const [borrowBook] = useBorrowBookMutation();
+  const navigate = useNavigate();
 
   const [selectedBook, setSelectedBook] = useState<any>(null);
   const [borrowOpen, setBorrowOpen] = useState(false);
@@ -43,8 +44,10 @@ export default function Books() {
   // --- Borrow Book ---
   const handleBorrow = async () => {
     if (!selectedBook) return;
-    if (borrowQty < 1 || borrowQty > selectedBook.copies)
-      return toast.error("Invalid quantity");
+
+    if (borrowQty < 1) return toast.error("0 quantity not allowed.");
+    else if(borrowQty > selectedBook.copies) return toast.error(`Only ${selectedBook.copies} copies available`)
+
     if (!borrowDue) return toast.error("Please select a due date");
 
     try {
@@ -56,6 +59,7 @@ export default function Books() {
 
       toast.success(`Borrowed ${borrowQty} copy/copies of "${selectedBook.title}"`);
       setBorrowOpen(false);
+      navigate("/borrow-summary");
     } catch (err) {
       toast.error("Failed to borrow book");
     }
