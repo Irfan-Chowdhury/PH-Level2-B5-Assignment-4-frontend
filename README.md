@@ -7,11 +7,11 @@
 
 ## 🚀 Live Demo
 
-- **Frontend:** [https://your-frontend-link.vercel.app](#)
-- **Backend:** [https://your-backend-link.onrender.com/api](#)
+- **Frontend:** [https://library-management-frontend-eta-umber.vercel.app](#)
+- **Backend:** [https://library-management-server-tau.vercel.app](#)
 - **GitHub Repositories:**
-  - [Frontend Repo](#)
-  - [Backend Repo](#)
+  - [https://github.com/Irfan-Chowdhury/PH-Level2-B5-Assignment-4-frontend](https://github.com/Irfan-Chowdhury/PH-Level2-B5-Assignment-4-frontend)
+  - [https://github.com/Irfan-Chowdhury/PH-Level2-B5-Assignment-3](https://github.com/Irfan-Chowdhury/PH-Level2-B5-Assignment-3)
 
 ---
 
@@ -114,32 +114,6 @@ It demonstrates modular frontend-backend integration, RESTful API communication,
 
 ---
 
-## 📂 Folder Structure (Frontend)
-
-```txt
-src/
-├── components/
-│ ├── ui/ # Reusable UI components (Button, Input, Dialog)
-├── pages/
-│ ├── Books.tsx # List + CRUD actions
-│ ├── AddBook.tsx # Create new book
-│ ├── BookDetails.tsx # Single book view
-│ ├── EditBook.tsx # Edit existing book
-│ ├── BorrowSummary.tsx# Borrow summary table
-├── redux/
-│ ├── api/
-│ │ └── apiSlice.ts # Base RTK Query config
-│ └── features/
-│ └── books/
-│ └── books.api.ts # Book + Borrow API endpoints
-├── App.tsx
-└── main.tsx
-```
-
-
-
----
-
 ## ⚙️ Installation & Setup
 
 ### 🖥️ Frontend Setup
@@ -148,5 +122,9 @@ git clone git@github.com:Irfan-Chowdhury/PH-Level2-B5-Assignment-4-frontend.git
 cd minimal-library-frontend
 npm install
 npm run dev
+```
 
-
+## ✅ Author
+**Name :** Md Irfan Chowdhury <br>
+**Email :** irfanchowdhury80@gmail.com.com <br>
+**LinkedIn :** https://github.com/Irfan-Chowdhury
