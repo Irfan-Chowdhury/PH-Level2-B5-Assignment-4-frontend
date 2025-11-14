@@ -25,7 +25,11 @@ import { Input } from "@/components/ui/input";
 
 export default function HeroSection() {
   const navigate = useNavigate();
-  const { data: books = [], isLoading, isError } = useGetBooksQuery();
+  // const { data: books = [], isLoading, isError } = useGetBooksQuery();
+  const [page, setPage] = useState(1);  
+  const { data, isLoading, isError } = useGetBooksQuery({ page, limit: 10 });
+  const books = data?.data || [];                 // book list
+
   const [borrowBook, { isLoading: borrowing }] = useBorrowBookMutation();
 
   // --- Borrow Modal State ---

@@ -20,7 +20,14 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 
 export default function Books() {
-  const { data: books = [], isLoading, isError } = useGetBooksQuery();
+  // const { data: books = [], isLoading, isError } = useGetBooksQuery();
+  const [page, setPage] = useState(1);  
+  const { data, isLoading, isError } = useGetBooksQuery({ page, limit: 10 });
+
+  const books = data?.data || [];                 // book list
+  const pagination = data?.pagination || {};      // pagination info
+
+
   const [deleteBook] = useDeleteBookMutation();
   const [borrowBook] = useBorrowBookMutation();
   const navigate = useNavigate();
@@ -146,20 +153,44 @@ export default function Books() {
 
                     <Button
                       size="sm"
+                      disabled={book.copies === 0}
                       onClick={() => {
                         setSelectedBook(book);
                         setBorrowQty(1);
                         setBorrowDue("");
                         setBorrowOpen(true);
                       }}
+                      className="flex items-center gap-1"
                     >
-                      <BookOpen className="w-4 h-4" /> Borrow
+                      <BookOpen className="w-4 h-4" />
+                      {book.copies > 0 ? "Borrow" : "Unavailable"}
                     </Button>
+
                   </TableCell>
                 </TableRow>
               ))}
           </TableBody>
         </Table>
+      </div>
+
+      <div className="flex justify-center gap-4 mt-4">
+          <Button
+            disabled={page === 1}
+            onClick={() => setPage(page - 1)}
+          >
+            ◀ Previous
+          </Button>
+
+          <span className="px-3 py-1 bg-gray-100 rounded">
+            Page {page} of {pagination.totalPages}
+          </span>
+
+          <Button
+            disabled={page === pagination.totalPages}
+            onClick={() => setPage(page + 1)}
+          >
+            Next ▶
+          </Button>
       </div>
 
       {/* --- Borrow Book Modal --- */}

@@ -21,20 +21,36 @@ export const booksApi = createApi({
   baseQuery: fetchBaseQuery({
     baseUrl: config.baseUrl
   }),
-  tagTypes: ["Books"],
+  tagTypes: ["Books", "BorrowSummary"],
 
   endpoints: (builder) => ({
     // --------------------------
     // 1️⃣ Get All Books
     // --------------------------
-    getBooks: builder.query<Book[], void>({
-      query: () => ({
-        url: "books",
+    // getBooks: builder.query<Book[], void>({
+    //   query: () => ({
+    //     url: "books",
+    //     method: "GET",
+    //   }),
+    //   transformResponse: (response: { success: boolean; data: Book[] }) => response.data,
+    //   providesTags: ["Books"],
+    // }),
+
+    getBooks: builder.query<{ 
+      data: Book[]; pagination: any },    // return full object
+      { page?: number; limit?: number }     // accepts query params
+    >({
+      query: ({ page = 1, limit = 10 } = {}) => ({
+        url: `books?page=${page}&limit=${limit}`,
         method: "GET",
       }),
-      transformResponse: (response: { success: boolean; data: Book[] }) => response.data,
-      providesTags: ["Books"],
+    transformResponse: (response: any) => ({
+      data: response.data,
+      pagination: response.pagination,
     }),
+    providesTags: ["Books"],
+  }),
+
 
     // --------------------------
     // 2️⃣ Get Single Book by ID
@@ -86,33 +102,49 @@ export const booksApi = createApi({
     // --------------------------
     // Borrow Books
     // --------------------------
-    borrowBook: builder.mutation<{ success: boolean; message: string },{ book: string; quantity: number; dueDate: string }> ({
-      query: (body) => ({
-        url: "borrow",
-        method: "POST",
-        body,
+
+      borrowBook: builder.mutation<
+        { success: boolean; message: string },
+        { book: string; quantity: number; dueDate: string }
+      >({
+        query: (body) => ({
+          url: "borrow",
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: ["BorrowSummary", "Books"],
       }),
-      invalidatesTags: ["Books"], // to refresh available copies
-    }),
 
-    // --------------------------
-    // Borrow Books List history
-    // --------------------------
-
-
-  getBorrowSummary: builder.query<{
-        totalQuantity: number;
-        book: { title: string; isbn: string };
-      }[],
-      void>({
-      query: () => ({ 
-        url: "borrow", 
-        method: "GET" 
-      }),
-      transformResponse: (response: any) => response.data, // return the array itself
+      // --------------------------
+      // Borrow Summary with Pagination
+      // --------------------------
+        getBorrowSummary: builder.query<
+        {
+          data: {
+            totalQuantity: number;
+            book: { title: string; isbn: string };
+          }[];
+          pagination: {
+            total: number;
+            page: number;
+            limit: number;
+            totalPages: number;
+          };
+        },
+        { page: number; limit: number }
+        >({
+        query: ({ page, limit }) => ({
+          url: `borrow?page=${page}&limit=${limit}`,
+          method: "GET",
+        }),
+        transformResponse: (response: any) => ({
+          data: response.data,
+          pagination: response.pagination,
+        }),
+        providesTags: ["BorrowSummary"],
+        })
     })
-  })
-  
+
 });
 
 // ✅ Export auto-generated hooks
